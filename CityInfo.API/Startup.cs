@@ -19,7 +19,7 @@ namespace CityInfo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-                .AddMvcOptions(o => o.OutputFormatters.Add(
+                .AddMvcOptions(o => o.OutputFormatters.Add( // Adds support for XML responses
                     new XmlDataContractSerializerOutputFormatter()))
                     ;
 
@@ -41,7 +41,7 @@ namespace CityInfo.API
         {
             loggerFactory.AddConsole();
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment()) //Checks hosting environment name
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -50,7 +50,7 @@ namespace CityInfo.API
                 app.UseExceptionHandler();
             }
 
-            app.UseStatusCodePages();
+            app.UseStatusCodePages(); //Adds status code pages for various requests
             app.UseMvc();
 
             //app.Run(async (context) =>

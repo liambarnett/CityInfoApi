@@ -16,7 +16,7 @@ namespace CityInfo.API
         public CitiesDataStore()
         {
             //init dummy data
-            Cities = new List<CityDto>()
+            Cities = new List<CityDto>() //test data store for the API
             {
                 new CityDto()
                 {
