@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using NLog.Extensions.Logging;
 using CityInfo.API.Services;
 using Microsoft.Extensions.Configuration;
+using CityInfo.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CityInfo.API
 {
@@ -23,8 +25,10 @@ namespace CityInfo.API
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appSettings.json", optional:false, reloadOnChange:true)
-                .AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
+                .AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            
 
             Configuration = builder.Build();
 
@@ -58,10 +62,16 @@ namespace CityInfo.API
 #else
             services.AddTransient<IMailService, CloudMailService>(); //register cloud mail service 
 #endif
+            var connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
+            services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+
+            services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            CityInfoContext CityInfoContext)
         {
             loggerFactory.AddConsole();
 
@@ -78,6 +88,8 @@ namespace CityInfo.API
             {
                 app.UseExceptionHandler();
             }
+
+            CityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages(); //Adds status code pages for various requests
             app.UseMvc();
