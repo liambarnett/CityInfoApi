@@ -58,6 +58,31 @@ namespace CityInfo.API.Controllers
                     Description = city.Description
                 };
 
+                foreach (var poi in city.PointsOfInterest)
+                {
+                    cityResult.PointsOfInterest.Add(
+                        new PointOfInterestDto()
+                        {
+                            Id = poi.Id,
+                            Name = poi.Name,
+                            Description = poi.Description
+                        });
+                }
+
+                return Ok(cityResult);
+
+            }
+
+            var cityWithoutPointsOfInterestResult =
+                new CityWithoutPointsOfInterestDto()
+                {
+                    Id = city.Id,
+                    Description = city.Description,
+                    Name = city.Name
+                };
+
+            return Ok(cityWithoutPointsOfInterestResult);
+
                 //foreach (PointOfInterestDto in city.PointsOfInterest)
                 //{
                 //    cityResult.PointsOfInterest.Add(
@@ -66,7 +91,7 @@ namespace CityInfo.API.Controllers
 
                 //        });
                 //}
-            }
+            
 
             ////find city
             //var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
@@ -80,4 +105,3 @@ namespace CityInfo.API.Controllers
         }
     }
 }
-
