@@ -92,6 +92,14 @@ namespace CityInfo.API
             CityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages(); //Adds status code pages for various requests
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Entities.City, Models.CityWithoutPointsOfInterestDto>();
+                cfg.CreateMap<Entities.City, Models.CityDto>();
+                cfg.CreateMap<Entities.PointOfInterest, Models.PointOfInterestDto>();
+            });
+
             app.UseMvc();
 
             //app.Run(async (context) =>
